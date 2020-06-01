@@ -8,4 +8,9 @@ object server extends ScalaModule {
     ivy"com.lihaoyi::upickle:0.9.5",
     ivy"com.lihaoyi::cask:0.6.7"
   )
+
+  object test extends Tests {
+    def ivyDeps = Agg(ivy"org.scalatest::scalatest:3.1.2")
+    def testFrameworks = Seq("org.scalatest.tools.Framework")
+  }
 }

@@ -1,8 +1,7 @@
 package halfpipe
 
-import com.typesafe.scalalogging.LazyLogging
-import scala.io.Source
 import cask._
+import com.typesafe.scalalogging.LazyLogging
 
 // Main definition of the backend server, including API routes.
 object Server extends MainRoutes with LazyLogging {
