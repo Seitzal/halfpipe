@@ -7,7 +7,7 @@ public class Tisch {
 	private Stapel skat;
 	
 	//Der mittlere Stichstapel
-	private Stapel stiche;
+	private Stapel stich;
 	
 	//Die nachfolgenden Variablen sind personenspezifisch, d.h. sie ändern sich nicht im Verlauf einer Runde
 	private final Spieler spieler1;
@@ -30,63 +30,20 @@ public class Tisch {
 		sagen = spieler3;
 		
 		skat = new Stapel("Skat");
-		stiche = new Stapel("Stiche");
+		stich = new Stapel("Stiche");
 	}
 	
-	public void distributeToPlayersAtTable(Stapel kartenstapel) {
-		for (int i=0; i<3; i++)
-		{
-			hoeren.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<3; i++)
-		{
-			sagen.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<3; i++)
-		{
-			geben.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		
-		for (int i=0; i<2; i++)
-		{
-			skat.addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}		
-		
-		for (int i=0; i<4; i++)
-		{
-			hoeren.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<4; i++)
-		{
-			sagen.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<4; i++)
-		{
-			geben.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		
-		for (int i=0; i<3; i++)
-		{
-			hoeren.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<3; i++)
-		{
-			sagen.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
-		for (int i=0; i<3; i++)
-		{
-			geben.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
-			kartenstapel.removeCard(0);
-		}
+	public void deal(Stapel kartenstapel) {
+		kartenstapel.moveN(hoeren.getHandCards(), 3);
+		kartenstapel.moveN(sagen.getHandCards(), 3);
+		kartenstapel.moveN(geben.getHandCards(), 3);
+		kartenstapel.moveN(skat, 2);
+		kartenstapel.moveN(hoeren.getHandCards(), 4);
+		kartenstapel.moveN(sagen.getHandCards(), 4);
+		kartenstapel.moveN(geben.getHandCards(), 4);
+		kartenstapel.moveN(hoeren.getHandCards(), 3);
+		kartenstapel.moveN(sagen.getHandCards(), 3);
+		kartenstapel.moveN(geben.getHandCards(), 3);
 	}
 	
 	public void printAllCardStacks() {

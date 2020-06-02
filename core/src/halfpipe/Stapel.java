@@ -19,13 +19,32 @@ public class Stapel {
 		karten.add(karte);
 	}
 
-	// Entfernt eine Karte aus dem Stapel anhand der Position
-	public void removeCard(int atPosition) {
-		karten.remove(atPosition);
+	public void addCards(ArrayList<Karte> karten) {
+		for (Karte karte: karten) {
+			this.karten.add(karte);
+		}
 	}
 
-	public Karte getCardAtPosition(int atPosition) {
-		return karten.get(atPosition);
+	public Karte drawOne() {
+		return karten.remove(karten.size() - 1);
+	}
+
+	public ArrayList<Karte> drawN(int n) {
+		ArrayList<Karte> buffer = new ArrayList<Karte>();
+		for(int i = 0; i < n; i++) {
+			buffer.add(drawOne());
+		}
+		return buffer;
+	}
+
+	public void moveN(Stapel wohin, int n) {
+		for(int i = 0; i < n; i++) {
+			wohin.addCard(drawOne());
+		}
+	}
+
+	public Karte removeAtIndex(int index) {
+		return karten.remove(index);
 	}
 
 	// Die Arraylist dieser Instanz
