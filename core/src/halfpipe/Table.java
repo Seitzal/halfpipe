@@ -103,10 +103,11 @@ public class Table
 	public CardStack createCardDeck()
 	{
 		CardStack kartendeck = new CardStack("Kartendeck");
-        for (int i = 0; i < 32; i++)
-		{ 
-			Card karte = new Card(i, kartendeck);
-        }
+    for (Farbe farbe : Farbe.values()) {
+			for (Kartenwert wert : Kartenwert.values()) {
+				new Card(farbe, wert, kartendeck);
+			}
+		}
 		return kartendeck;
 	}
 	
