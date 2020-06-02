@@ -100,7 +100,7 @@ public class Tisch {
 		Stapel kartendeck = new Stapel("Kartendeck");
     for (Farbe farbe : Farbe.values()) {
 			for (Kartenwert wert : Kartenwert.values()) {
-				new Karte(farbe, wert, kartendeck);
+				kartendeck.addCard(new Karte(farbe, wert));
 			}
 		}
 		return kartendeck;
