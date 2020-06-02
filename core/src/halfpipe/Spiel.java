@@ -51,7 +51,7 @@ public final class Spiel {
       false, 
       false, 
       false, 
-      false, 
+      true, 
       trumpffarbe, 
       istHand, 
       istSchneiderAngesagt, 
