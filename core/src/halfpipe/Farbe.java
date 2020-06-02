@@ -8,13 +8,13 @@ public enum Farbe {
   PIK("Pik", 11),
   KREUZ("Kreuz", 12);
 
-  private Farbe(String name, int value) {
+  private Farbe(String name, int wert) {
     this.name = name;
-    this.value = value;
+    this.wert = wert;
   }
 
   public final String name;
-  public final int value;
+  public final int wert;
 
   public static Farbe fromName(String name) {
     switch (name) {

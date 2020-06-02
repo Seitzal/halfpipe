@@ -14,19 +14,19 @@ public enum Kartenwert {
 
   private Kartenwert(
       String name, 
-      int value, 
-      int strengthNormal, 
-      int strengthNull) {
+      int punkte, 
+      int staerkeNormal, 
+      int staerkeNull) {
     this.name = name;
-    this.value = value;
-    this.strengthNormal = strengthNormal;
-    this.strengthNull = strengthNull;
+    this.punkte = punkte;
+    this.staerkeNormal = staerkeNormal;
+    this.staerkeNull = staerkeNull;
   }
 
   public final String name;
-  public final int value;
-  public final int strengthNormal;
-  public final int strengthNull;
+  public final int punkte;
+  public final int staerkeNormal;
+  public final int staerkeNull;
 
   public static Kartenwert fromName(String name) {
     switch (name) {

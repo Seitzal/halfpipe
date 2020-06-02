@@ -2,41 +2,38 @@ package halfpipe;
 
 import java.util.Collections;
 
-public class Table
-{
+public class Tisch {
 	//Der Skat, wie er leibt und lebt
-	private CardStack skat;
+	private Stapel skat;
 	
 	//Der mittlere Stichstapel
-	private CardStack middleStack;
+	private Stapel stiche;
 	
 	//Die nachfolgenden Variablen sind personenspezifisch, d.h. sie ändern sich nicht im Verlauf einer Runde
-	private Player firstPlayer;
-	private Player secondPlayer;
-	private Player thirdPlayer;
+	private final Spieler spieler1;
+	private final Spieler spieler2;
+	private final Spieler spieler3;
 	
 	//Die nachfolgenden Variablen sind spielspezifisch, d.h. sie rotieren während einer Runde durch
 	//In der ersten Runde ist firstPlayer=geben, secondPlayer=hören, thirdPlayer = sagen
-	private Player geben;
-	private Player hoeren;
-	private Player sagen;
+	private Spieler geben;
+	private Spieler hoeren;
+	private Spieler sagen;
 	
-	public Table(Player player1, Player player2, Player player3)
-	{
-		firstPlayer = player1;
-		secondPlayer = player2;
-		thirdPlayer = player3;
+	public Tisch(Spieler spieler1, Spieler spieler2, Spieler spieler3) {
+		this.spieler1 = spieler1;
+		this.spieler2 = spieler2;
+		this.spieler3 = spieler3;
 		
-		geben = firstPlayer;
-		hoeren = secondPlayer;
-		sagen = thirdPlayer;
+		geben = spieler1;
+		hoeren = spieler2;
+		sagen = spieler3;
 		
-		skat = new CardStack("Skat");
-		middleStack = new CardStack("aktueller Stich");
+		skat = new Stapel("Skat");
+		stiche = new Stapel("Stiche");
 	}
 	
-	public void distributeToPlayersAtTable(CardStack kartenstapel)
-	{
+	public void distributeToPlayersAtTable(Stapel kartenstapel) {
 		for (int i=0; i<3; i++)
 		{
 			hoeren.getHandCards().addCard(kartenstapel.getCardAtPosition(0));
@@ -92,28 +89,24 @@ public class Table
 		}
 	}
 	
-	public void printAllCardStacks()
-	{
+	public void printAllCardStacks() {
 		hoeren.getHandCards().printContentName();
 		sagen.getHandCards().printContentName();
 		geben.getHandCards().printContentName();
 		skat.printContentName();
 	}
 	
-	public CardStack createCardDeck()
-	{
-		CardStack kartendeck = new CardStack("Kartendeck");
+	public Stapel createCardDeck() {
+		Stapel kartendeck = new Stapel("Kartendeck");
     for (Farbe farbe : Farbe.values()) {
 			for (Kartenwert wert : Kartenwert.values()) {
-				new Card(farbe, wert, kartendeck);
+				new Karte(farbe, wert, kartendeck);
 			}
 		}
 		return kartendeck;
 	}
 	
-	public void shuffleCards(CardStack kartenstapel)
-	{
+	public void shuffleCards(Stapel kartenstapel) {
 		Collections.shuffle(kartenstapel.getList());
-		
 	}
 }

@@ -5,11 +5,11 @@ public class Main
 
 	public static void main (String[] args)
 	{
-		Player player1 = new Player("Alex S.");
-		Player player2 = new Player("Jakob");
-		Player player3 = new Player("Stephan");
-		Table tableAtHotz = new Table(player1, player2, player3);
-		CardStack cardDeck = tableAtHotz.createCardDeck();
+		Spieler player1 = new Spieler("Alex S.");
+		Spieler player2 = new Spieler("Jakob");
+		Spieler player3 = new Spieler("Stephan");
+		Tisch tableAtHotz = new Tisch(player1, player2, player3);
+		Stapel cardDeck = tableAtHotz.createCardDeck();
 		tableAtHotz.shuffleCards(cardDeck);
 		tableAtHotz.distributeToPlayersAtTable(cardDeck);
 		tableAtHotz.printAllCardStacks();
