@@ -1,5 +1,6 @@
-package halfpipe
+package halfpipe.Server
 
+import halfpipe._
 import cask._
 import com.typesafe.scalalogging.LazyLogging
 

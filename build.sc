@@ -1,7 +1,11 @@
 import mill._, scalalib._
 
+object core extends JavaModule {
+}
+
 object server extends ScalaModule {
   def scalaVersion = "2.13.2"
+  def moduleDeps = Seq(core)
   def ivyDeps = Agg(
     ivy"ch.qos.logback:logback-classic:1.2.3",
     ivy"com.typesafe.scala-logging::scala-logging:3.9.2",
