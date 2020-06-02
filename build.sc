@@ -1,6 +1,10 @@
 import mill._, scalalib._
 
 object core extends JavaModule {
+  object test extends Tests {
+    def ivyDeps = Agg(ivy"com.novocode:junit-interface:0.11")
+    def testFrameworks = Seq("com.novocode.junit.JUnitFramework")
+  }
 }
 
 object server extends ScalaModule {
