@@ -11,6 +11,7 @@ The client pulls in its dependencies via CDN and does not have its own build ste
 
 ### Linux
 
+Use the following commands to get the code and the build tool and to build and run the server locally:
 ```bash
 git clone https://github.com/seitzal/halfpipe
 cd halfpipe
