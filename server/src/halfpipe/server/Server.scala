@@ -13,7 +13,7 @@ object Server extends MainRoutes with LazyLogging {
 
   // Endpoint to get the message of the day / MOTD.
   @get("/motd")
-  def test() = ok("Hello World!")
+  def motd() = ok("Hello World!")
 
   // Cask needs us to do this.
   initialize()

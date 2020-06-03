@@ -52,4 +52,11 @@ public class Karte {
 		return farbe.name + "-" + wert.name;
 	}
 
+	@Override public boolean equals(Object o) {
+		if (o instanceof Karte) {
+			Karte andere = (Karte) o;
+			return farbe == andere.farbe && wert == andere.wert;
+		} else return false;
+	}
+
 }

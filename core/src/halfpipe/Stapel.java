@@ -8,7 +8,7 @@ public class Stapel {
 
 	//Der Kartenstapel als Arraylist
 	private ArrayList<Karte> karten;
-	private String name;
+	public final String name;
 
 	public Stapel(String name) {
 		karten=new ArrayList<Karte>();
@@ -72,6 +72,15 @@ public class Stapel {
 	//Die Anzahl der Karten, die sich in diesem Kartenstapel befinden
 	public int getSize() {
 		return karten.size();
+	}
+
+	@Override public boolean equals(Object o) {
+		if (o instanceof Stapel) {
+			Stapel anderer = (Stapel) o;
+			if (!name.equals(anderer.name) || !this.getList().equals(anderer.getList()))
+				return false;
+			else return true;
+		} else return false;
 	}
 
 }
