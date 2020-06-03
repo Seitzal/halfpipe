@@ -14,7 +14,8 @@ object server extends ScalaModule {
     ivy"ch.qos.logback:logback-classic:1.2.3",
     ivy"com.typesafe.scala-logging::scala-logging:3.9.2",
     ivy"com.lihaoyi::upickle:0.9.5",
-    ivy"com.lihaoyi::cask:0.6.7"
+    ivy"com.lihaoyi::cask:0.6.7",
+    ivy"com.typesafe:config:1.4.0"
   )
 
   object test extends Tests {
