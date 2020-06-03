@@ -6,7 +6,8 @@ public enum Farbe {
   KARO("Karo", 9),
   HERZ("Herz", 10),
   PIK("Pik", 11),
-  KREUZ("Kreuz", 12);
+  KREUZ("Kreuz", 12),
+  NULL("Null", 0);
 
   private Farbe(String name, int wert) {
     this.name = name;
@@ -22,6 +23,7 @@ public enum Farbe {
       case "Herz": return HERZ;
       case "Pik": return PIK;
       case "Kreuz": return KREUZ;
+      case "Null": return NULL;
       default: throw new NoSuchElementException("Ungültige Farbe");
     }
   }

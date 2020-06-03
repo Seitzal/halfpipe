@@ -20,4 +20,15 @@ class CodecTests extends AnyFunSuite {
     assert(stapel1 == read[Stapel](write(stapel1)))
   }
 
+  test("Codec für Spiele") {
+    val spiel1 = Spiel.farbspiel(2, KARO, true, true, false, false)
+    assert(spiel1 == read[Spiel](write(spiel1)))
+    val spiel2 = Spiel.grand(-3, false, false, false, false)
+    assert(spiel2 == read[Spiel](write(spiel2)))
+    val spiel3 = Spiel.nullspiel(true, true)
+    assert(spiel3 == read[Spiel](write(spiel3)))
+    val spiel4 = Spiel.ramsch(2)
+    assert(spiel4 == read[Spiel](write(spiel4)))
+  }
+
 }

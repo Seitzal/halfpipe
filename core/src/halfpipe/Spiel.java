@@ -13,10 +13,10 @@ public final class Spiel {
   public Boolean istSchwarzAngesagt; // s.o.
   public final Boolean istOuvert;
 
-  private int kontraStufe = 1; // 2 = Kontra, 4 = Re, 8 = Bock, 16 = Hirsch
-  private int geschoben = 0;
+  public int kontraStufe; // 1 = Normal, 2 = Kontra, 4 = Re, 8 = Bock, 16 = Hirsch
+  public int geschoben;
 
-  private Spiel(
+  public Spiel(
       int bubenFaktor,
       Boolean istNull,
       Boolean istRamsch,
@@ -26,7 +26,9 @@ public final class Spiel {
       Boolean istHand,
       Boolean istSchneiderAngesagt,
       Boolean istSchwarzAngesagt,
-      Boolean istOuvert) {
+      Boolean istOuvert,
+      int kontraStufe,
+      int geschoben) {
     this.bubenFaktor = bubenFaktor;
     this.istNull = istNull;
     this.istRamsch = istRamsch;
@@ -37,6 +39,8 @@ public final class Spiel {
     this.istSchneiderAngesagt = istSchneiderAngesagt;
     this.istSchwarzAngesagt = istSchwarzAngesagt;
     this.istOuvert = istOuvert;
+    this.kontraStufe = kontraStufe;
+    this.geschoben = geschoben;
   }
 
   public static Spiel farbspiel(
@@ -56,7 +60,9 @@ public final class Spiel {
       istHand, 
       istSchneiderAngesagt, 
       istSchwarzAngesagt, 
-      istOuvert
+      istOuvert,
+      1,
+      0
     );
   }
 
@@ -67,11 +73,13 @@ public final class Spiel {
       false,
       false,
       false,
-      null,
+      Farbe.NULL,
       hand,
       false,
       false,
-      ouvert
+      ouvert,
+      1,
+      0
     );
   }
 
@@ -87,26 +95,49 @@ public final class Spiel {
       false, 
       true, 
       false, 
-      null, 
+      Farbe.NULL, 
       istHand, 
       istSchneiderAngesagt, 
       istSchwarzAngesagt, 
-      istOuvert);
+      istOuvert,
+      1,
+      0);
   }
 
-  public static Spiel ramsch() {
+  public static Spiel ramsch(int geschoben) {
     return new Spiel (
       0,
       false,
       false,
       false,
       false,
-      null,
+      Farbe.NULL,
       false,
       false,
       false,
-      false
+      false,
+      1,
+      geschoben
     );
+  }
+
+  @Override public boolean equals(Object o) {
+    if (!(o instanceof Spiel))
+      return false;
+    Spiel anderes = (Spiel) o;
+    return 
+      this.bubenFaktor == anderes.bubenFaktor &&
+      this.istNull == anderes.istNull &&
+      this.istRamsch == anderes.istRamsch &&
+      this.istGrand == anderes.istGrand &&
+      this.istFarbspiel == anderes.istFarbspiel &&
+      this.trumpffarbe == anderes.trumpffarbe &&
+      this.istHand == anderes.istHand &&
+      this.istSchneiderAngesagt == anderes.istSchneiderAngesagt &&
+      this.istSchwarzAngesagt == anderes.istSchwarzAngesagt &&
+      this.istOuvert == anderes.istOuvert &&
+      this.kontraStufe == anderes.kontraStufe &&
+      this.geschoben == anderes.geschoben;
   }
 
 }
