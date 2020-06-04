@@ -1,13 +1,11 @@
-import $ from 'jquery';
-
-export default {
+const api = {
 
   getMotd: function(then) {
     $.ajax({
       method: "GET",
-      url: `${conf.server}/motd`,
+      url: `${config.app.location}/motd`,
       success: then
     });
   }
 
-}
+};
