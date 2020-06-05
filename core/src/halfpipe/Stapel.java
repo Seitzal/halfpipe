@@ -73,6 +73,10 @@ public class Stapel {
 	public int getSize() {
 		return karten.size();
 	}
+	
+	public void empty() {
+		karten.clear();
+	}
 
 	@Override public boolean equals(Object o) {
 		if (o instanceof Stapel) {

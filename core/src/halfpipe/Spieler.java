@@ -9,14 +9,14 @@ public class Spieler
 	private Stapel wonCards;
 	
 
-	private String name;
+	public String name;
 	
 	
-	public Spieler(String setName)
+	public Spieler(String name)
 	{
-		handCards = new Stapel("Handkarten von " + setName);
-		wonCards = new Stapel("Ablagestapel von " + setName);
-		name = setName;
+		handCards = new Stapel("Handkarten von " + name);
+		wonCards = new Stapel("Ablagestapel von " + name);
+		this.name = name;
 	}
 
 	

@@ -12,10 +12,10 @@ public final class Spiel {
   public Boolean istSchneiderAngesagt; // Kann nachgeholt werden, daher nicht final
   public Boolean istSchwarzAngesagt; // s.o.
   public final Boolean istOuvert;
-
+  
   public int kontraStufe; // 1 = Normal, 2 = Kontra, 4 = Re, 8 = Bock, 16 = Hirsch
   public int geschoben;
-
+  
   public Spiel(
       int bubenFaktor,
       Boolean istNull,
