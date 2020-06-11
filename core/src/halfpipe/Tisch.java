@@ -133,6 +133,7 @@ public class Tisch {
 	
 	public void deal() {
 		Stapel deck = Stapel.newDeck();
+		deck.shuffle();
 		deck.moveN(hoeren.getHandCards(), 3);
 		deck.moveN(sagen.getHandCards(), 3);
 		deck.moveN(geben.getHandCards(), 3);
