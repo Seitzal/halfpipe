@@ -1,6 +1,7 @@
 package halfpipe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /* Kann für beliebige Sachen verwendet werden:
    Eine Spielerhand, den Skat, den Stapel in der Mitte des Tisches, die Ablagestapel etc.*/
@@ -78,6 +79,10 @@ public class Stapel {
 		karten.clear();
 	}
 
+	public void shuffle() {
+		Collections.shuffle(karten);
+	}
+
 	@Override public boolean equals(Object o) {
 		if (o instanceof Stapel) {
 			Stapel anderer = (Stapel) o;
@@ -85,6 +90,14 @@ public class Stapel {
 				return false;
 			else return true;
 		} else return false;
+	}
+
+	public static Stapel newDeck() {
+		Stapel stapel = new Stapel("Deck");
+		for (Farbe farbe : Farbe.values())
+			for (Kartenwert wert : Kartenwert.values())
+				stapel.addCard(new Karte(farbe, wert));
+		return stapel;
 	}
 
 }

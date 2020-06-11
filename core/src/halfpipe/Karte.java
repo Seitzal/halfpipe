@@ -1,6 +1,5 @@
 package halfpipe;
 
-import static halfpipe.Farbe.*;
 import static halfpipe.Kartenwert.*;
 
 public class Karte {

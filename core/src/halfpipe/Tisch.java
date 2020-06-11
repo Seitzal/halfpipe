@@ -1,168 +1,102 @@
 package halfpipe;
 
-import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.HashMap;
 
 public class Tisch {
-	//Der Skat, wie er leibt und lebt
-	private Stapel skat;
+
+	// Der Skat, wie er leibt und lebt
+	private final Stapel skat = new Stapel("Skat");
 	
-	//Der mittlere Stichstapel
-	private Stapel stich;
-	//Aufpassen, reizindex != reizwert, reizwert bezeichnet das was schon angesagt wurde, und der Index die Stelle in der Reizwerttabelle, die als nächstes kommt
-	private int reizindex;
-	private int reizwert;
-	private int runde;
-	private int spiel;
-	//Die nachfolgenden Variablen sind personenspezifisch, d.h. sie ändern sich nicht im Verlauf einer Runde
+	// Der mittlere Stichstapel
+	private final Stapel stich = new Stapel("Stiche");
+
+	// Die nachfolgenden Variablen sind personenspezifisch, d.h. sie ändern sich 
+	// nicht im Verlauf einer Runde
 	private final Spieler spieler1;
 	private final Spieler spieler2;
 	private final Spieler spieler3;
-	private static final int[] reizwerttabelle = new int[]{18,20,22,23,24,27,30,33,35,36,40,44,45,46,48,50,54,55,59,60,63,66,70,72,77,80,81,84,88,90,96,99,100,108,110,117,120,121,126,130,132,135,140,143,144,150,153,154,156,160,162,165,168,170,176,180,187,192,198,204,216,240,264};
-	
-	
-	//Die nachfolgenden Variablen sind spielspezifisch, d.h. sie rotieren während einer Runde durch
-	//In der ersten Runde ist firstPlayer=geben, secondPlayer=hören, thirdPlayer = sagen
+
+	// Die nachfolgenden Variablen sind spielspezifisch, d.h. sie rotieren während 
+	// einer Runde durch.
 	private Spieler geben;
 	private Spieler hoeren;
 	private Spieler sagen;
+	private Boolean hoerenGepasst;
+	private Boolean sagenGepasst;
+	private Boolean gebenGepasst;
+	private Boolean reizphaseVorbei;
+	private Boolean mitgegangen;
+	private Spieler solist;
+	private Boolean ramsch;
+	private Spiel spiel;
+	private int reizindex;
+	private int reizwert;
+	private int spielNr;
+
+	// ---------------------------------------------------------------------------
+	// HILFSFUNKTIONEN
 	
+	private static final int[] REIZWERTE = {
+		18,20,22,23,24,27,30,33,35,36,40,44,45,46,48,50,54,55,59,60,63,66,70,72,77,
+		80,81,84,88,90,96,99,100,108,110,117,120,121,126,130,132,135,140,143,144,
+		150,153,154,156,160,162,165,168,170,176,180,187,192,198,204,216,240,264
+	};
+
+	public Spieler spieler(int nummer) {
+		switch (nummer) {
+			case 1: return spieler1;
+			case 2: return spieler2;
+			case 3: return spieler3;
+			default: throw new NoSuchElementException();
+		}
+	}
+
+	public int runde() {
+		return 1 + ((spielNr - 1) / 3);
+	}
+
+	// ---------------------------------------------------------------------------
+	// CALLBACKS FÜR REAKTION AUF ZUSTANDSÄNDERUNGEN
+
+	// Liste von Callbacks, die bei Änderung des Zustands auszuführen sind
+	private final HashMap<Integer, Runnable> stateChangeCallbacks = 
+		new HashMap<>();
+	
+	// ID des nächsten registrierten Callbacks
+	private int nextCallbackId = 0;
+
+	// Registriert einen Callback und gibt eine unique ID zurück
+	public int registerStateChangeCallback(Runnable callback) {
+		stateChangeCallbacks.put(nextCallbackId, callback);
+		return nextCallbackId++;
+	}
+
+	// Deregistriert den Callback mit der gegebenen ID, soweit vorhanden
+	public void deregisterStateChangeCallback(int index) {
+		stateChangeCallbacks.remove(index);
+	}
+
+	// Führt alle registrierten Callbacks aus
+	private void propagateStateChange() {
+		for(Runnable callback : stateChangeCallbacks.values()) {
+			callback.run();
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// SPIELBEGINN
+
 	public Tisch(Spieler spieler1, Spieler spieler2, Spieler spieler3) {
 		this.spieler1 = spieler1;
 		this.spieler2 = spieler2;
 		this.spieler3 = spieler3;
-		
-		geben = spieler1;
-		hoeren = spieler2;
-		sagen = spieler3;
-		
-		runde=1;
-		spiel=1;
-		
-		skat = new Stapel("Skat");
-		stich = new Stapel("Stiche");
+		spielNr = 1;
+		reset();
 	}
-	
-	public void deal(Stapel kartenstapel) {
-		kartenstapel.moveN(hoeren.getHandCards(), 3);
-		kartenstapel.moveN(sagen.getHandCards(), 3);
-		kartenstapel.moveN(geben.getHandCards(), 3);
-		kartenstapel.moveN(skat, 2);
-		kartenstapel.moveN(hoeren.getHandCards(), 4);
-		kartenstapel.moveN(sagen.getHandCards(), 4);
-		kartenstapel.moveN(geben.getHandCards(), 4);
-		kartenstapel.moveN(hoeren.getHandCards(), 3);
-		kartenstapel.moveN(sagen.getHandCards(), 3);
-		kartenstapel.moveN(geben.getHandCards(), 3);
-	}
-	
-	public void printAllCardStacks() {
-		hoeren.getHandCards().printContentName();
-		sagen.getHandCards().printContentName();
-		geben.getHandCards().printContentName();
-		skat.printContentName();
-	}
-	
-	public Stapel createCardDeck() {
-		Stapel kartendeck = new Stapel("Kartendeck");
-    for (Farbe farbe : Farbe.values()) {
-			for (Kartenwert wert : Kartenwert.values()) {
-				kartendeck.addCard(new Karte(farbe, wert));
-			}
-		}
-		return kartendeck;
-	}
-	
-	public void shuffleCards(Stapel kartenstapel) {
-		Collections.shuffle(kartenstapel.getList());
-	}
-	
-	public Spieler Reizen(){
-		//gibt den Alleinspieler zurück; falls niemand spielen will, wird null zurückgegeben (->Ramsch)
-		Spieler ansagen = sagen;
-		Spieler mitgehen = hoeren;
-		reizindex=0;
-		reizwert=0;
-		String antwort;
-		for (int i = reizindex; i<reizwerttabelle.length; i++) {
-			reizindex = i;
-			
-			/* Hier später durch Userinterface-Eingabe ersetzen: */
-			System.out.println("Spieler " + ansagen.name + ", wollen Sie " + reizwerttabelle[i] + " ansagen? [y/n]");
-			antwort = System.console().readLine();
-			
-			if (antwort.equals("n")){
-				ansagen = geben;
-				break;
-			}
-			reizwert = reizwerttabelle[i];
-			
-			/* Hier später durch Userinterface-Eingabe ersetzen: */
-			System.out.println("Spieler " + mitgehen.name + ", wollen Sie bei " + reizwerttabelle[i] + " mitgehen? [y/n]");
-			antwort = System.console().readLine();
-			
-			
-			if (antwort.equals("n")){
-				reizindex = reizindex + 1;
-				ansagen = geben;
-				mitgehen = sagen;
-				break;
-			}
-		}
-		for (int i = reizindex; i<reizwerttabelle.length; i++) {
-			reizindex = i;
-			
-			/* Hier später durch Userinterface-Eingabe ersetzen: */
-			System.out.println("Spieler " + ansagen.name + ", wollen Sie " + reizwerttabelle[i] + " ansagen? [y/n]");
-			antwort = System.console().readLine();
-			
-			if (antwort.equals("n")){
-				if (reizwert==0){
-					
-					/* Hier später durch Userinterface-Eingabe ersetzen: */
-					System.out.println("Spieler " + mitgehen.name + ", wollen Sie das Spiel fuer 18 spielen? [y/n]");
-					antwort = System.console().readLine();
-					
-					if (antwort.equals("n")){
-						System.out.println("Es wird Ramsch gespielt!");
-						return null;
-					}
-					reizwert = 18;
-					
-					/* Hier später durch Userinterface-Ausgabe ersetzen: */
-					System.out.println("Spieler " + mitgehen.name + " spielt das Spiel fuer " + reizwert);
-					return mitgehen;
-				} else {
-					
-					/* Hier später durch Userinterface-Ausgabe ersetzen: */
-					System.out.println("Spieler " + mitgehen.name + " spielt das Spiel fuer " + reizwert);
-					return mitgehen;
-				}
-			
-			}
-			
-			reizwert = reizwerttabelle[i];
-			
-			/* Hier später durch Userinterface-Eingabe ersetzen: */
-			System.out.println("Spieler " + mitgehen.name + ", wollen Sie bei " + reizwerttabelle[i] + " mitgehen? [y/n]");
-			antwort = System.console().readLine();
-			
-			if (antwort.equals("n")){
-				
-				/* Hier später durch Userinterface-Ausgabe ersetzen: */
-				System.out.println("Spieler " + ansagen.name + " spielt das Spiel fuer " + reizwert);
-				return ansagen;
-			}
-		}
-		
-		/* Hier später durch Userinterface-Ausgabe ersetzen: */
-		System.out.println("Spieler " + mitgehen.name + " spielt das Spiel fuer " + reizwert);
-		return mitgehen;		
-	}
-	
-	public void reset()  {
-		spiel = spiel + 1;
-		
-		//Leert alle Kartenstapel
+
+	public void reset() {
+		//Leert alle Stapel
 		skat.empty();
 		stich.empty();
 		spieler1.getHandCards().empty();
@@ -171,23 +105,132 @@ public class Tisch {
 		spieler2.getWonCards().empty();
 		spieler3.getHandCards().empty();
 		spieler3.getWonCards().empty();
-		
-		
-		if (spiel%3==0){
+		// Verteilt Positionen
+		if (spielNr % 3 == 0) {
 			geben = spieler3;
-			hoeren=spieler1;
-			sagen=spieler2;
-		}
-		if (spiel%3==1){
+			hoeren = spieler1;
+			sagen = spieler2;
+		}else if (spielNr % 3 == 1) {
 			geben = spieler1;
 			hoeren = spieler2;
 			sagen = spieler3;			
-			runde = runde + 1
+		} else {
+			geben = spieler2;
+			hoeren = spieler3;
+			sagen = spieler1;
 		}
-		if (spiel%3==2){
-			geben=spieler2;
-			hoeren=spieler3;
-			sagen=spieler1;
+		// Initialisiert Zustand für die Reizphase
+		reizindex = 0;
+		reizwert = 0;
+		hoerenGepasst = false;
+		sagenGepasst = false;
+		gebenGepasst = false;
+		reizphaseVorbei = false;
+		mitgegangen = true;
+		ramsch = false;
+		propagateStateChange();
+	}
+	
+	public void deal() {
+		Stapel deck = Stapel.newDeck();
+		deck.moveN(hoeren.getHandCards(), 3);
+		deck.moveN(sagen.getHandCards(), 3);
+		deck.moveN(geben.getHandCards(), 3);
+		deck.moveN(skat, 2);
+		deck.moveN(hoeren.getHandCards(), 4);
+		deck.moveN(sagen.getHandCards(), 4);
+		deck.moveN(geben.getHandCards(), 4);
+		deck.moveN(hoeren.getHandCards(), 3);
+		deck.moveN(sagen.getHandCards(), 3);
+		deck.moveN(geben.getHandCards(), 3);
+		propagateStateChange();
+	}
+
+	// ---------------------------------------------------------------------------
+	// REIZPHASE
+	// Funktionen geben zurück, ob Aktion erfolgreich war (für UI Feedback).
+
+	public Boolean weiterreizen(int spielerNr) {
+		Spieler spieler = spieler(spielerNr);
+		if (!mitgegangen
+		|| (!(sagenGepasst && gebenGepasst) && spieler == hoeren)
+		|| (!sagenGepasst && spieler == geben)
+		|| (sagenGepasst && spieler == sagen)
+		|| reizwert == 264
+		) {
+			return false;
+		} else {
+			reizwert = REIZWERTE[reizindex];
+			reizindex++;
+			solist = spieler;
+			mitgegangen = false;
+			if (spieler == hoeren) {
+				reizphaseVorbei = true;
+				ramsch = false;
+			}
+			propagateStateChange();
+			return true;
 		}
 	}
+
+	public Boolean mitgehen(int spielerNr) {
+		Spieler spieler = spieler(spielerNr);
+		if (mitgegangen
+		|| spieler == geben
+		|| (!hoerenGepasst && spieler == sagen)
+		|| (hoerenGepasst && spieler == hoeren)
+		) {
+			return false;
+		} else {
+			mitgegangen = true;
+			solist = spieler;
+			propagateStateChange();
+			return true;
+		}
+	}
+
+	// Auch für Passen
+	public Boolean aussteigen(int spielerNr) {
+		Spieler spieler = spieler(spielerNr);
+		if (mitgegangen) {
+			if (spieler == hoeren
+			|| (!(sagenGepasst && gebenGepasst) && spieler == hoeren)
+			|| (!sagenGepasst && spieler == geben)
+			|| (sagenGepasst && spieler == sagen)
+			) {
+				return false;
+			} else {
+				if (spieler == hoeren) {
+					reizphaseVorbei = true;
+					ramsch = true;
+				} else if (spieler == sagen) {
+					sagenGepasst = true;
+				} else if (reizwert >= 18) {
+					reizphaseVorbei = true;
+					ramsch = false;
+				} else {
+					gebenGepasst = true;
+				}
+				propagateStateChange();
+				return true;
+			}
+		} else {
+			if (spieler == geben
+			|| (!hoerenGepasst && spieler == sagen)
+			|| (hoerenGepasst && spieler == hoeren)
+			) {
+				return false;
+			} else {
+				if (spieler == sagen || sagenGepasst) {
+					reizphaseVorbei = true;
+					ramsch = false;
+				} else {
+					hoerenGepasst = true;
+				}
+				propagateStateChange();
+				return true;
+			}
+		}
+	}
+
 }
