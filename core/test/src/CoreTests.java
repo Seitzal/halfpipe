@@ -197,6 +197,5 @@ public class CoreTests {
     assertTrue(tisch.ramsch);
     // TODO: Assertion for toAct
   }
-  
 
 }

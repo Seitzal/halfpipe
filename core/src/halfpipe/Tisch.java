@@ -155,7 +155,8 @@ public class Tisch {
 
 	public Boolean weiterreizen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
-		if (!mitgegangen
+		if (reizphaseVorbei
+		|| !mitgegangen
 		|| spieler != toAct
 		|| reizwert == 264
 		) {
@@ -181,8 +182,7 @@ public class Tisch {
 
 	public Boolean mitgehen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
-		if (spieler != toAct) return false;
-		if (mitgegangen) {
+		if (reizphaseVorbei || mitgegangen || spieler != toAct) {
 			return false;
 		} else {
 			mitgegangen = true;
@@ -200,7 +200,7 @@ public class Tisch {
 	// Auch für Passen
 	public Boolean aussteigen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
-		if (spieler != toAct) {
+		if (reizphaseVorbei || spieler != toAct) {
 			return false;
 		} else if (mitgegangen) {
 			if (spieler == hoeren) {
