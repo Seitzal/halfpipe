@@ -6,33 +6,34 @@ import java.util.HashMap;
 public class Tisch {
 
 	// Der Skat, wie er leibt und lebt
-	private final Stapel skat = new Stapel("Skat");
+	public final Stapel skat = new Stapel("Skat");
 	
 	// Der mittlere Stichstapel
-	private final Stapel stich = new Stapel("Stiche");
+	public final Stapel stich = new Stapel("Stiche");
 
 	// Die nachfolgenden Variablen sind personenspezifisch, d.h. sie ändern sich 
 	// nicht im Verlauf einer Runde
-	private final Spieler spieler1;
-	private final Spieler spieler2;
-	private final Spieler spieler3;
+	public final Spieler spieler1;
+	public final Spieler spieler2;
+	public final Spieler spieler3;
 
 	// Die nachfolgenden Variablen sind spielspezifisch, d.h. sie rotieren während 
 	// einer Runde durch.
-	private Spieler geben;
-	private Spieler hoeren;
-	private Spieler sagen;
-	private Boolean hoerenGepasst;
-	private Boolean sagenGepasst;
-	private Boolean gebenGepasst;
-	private Boolean reizphaseVorbei;
-	private Boolean mitgegangen;
-	private Spieler solist;
-	private Boolean ramsch;
-	private Spiel spiel;
-	private int reizindex;
-	private int reizwert;
-	private int spielNr;
+	public Spieler toAct;
+	public Spieler geben;
+	public Spieler hoeren;
+	public Spieler sagen;
+	public Boolean hoerenGepasst;
+	public Boolean sagenGepasst;
+	public Boolean gebenGepasst;
+	public Boolean reizphaseVorbei;
+	public Boolean mitgegangen;
+	public Spieler solist;
+	public Boolean ramsch;
+	public Spiel spiel;
+	public int reizindex;
+	public int reizwert;
+	public int spielNr;
 
 	// ---------------------------------------------------------------------------
 	// HILFSFUNKTIONEN
@@ -128,6 +129,7 @@ public class Tisch {
 		reizphaseVorbei = false;
 		mitgegangen = true;
 		ramsch = false;
+		toAct = sagen;
 		propagateStateChange();
 	}
 	
@@ -154,9 +156,7 @@ public class Tisch {
 	public Boolean weiterreizen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
 		if (!mitgegangen
-		|| (!(sagenGepasst && gebenGepasst) && spieler == hoeren)
-		|| (!sagenGepasst && spieler == geben)
-		|| (sagenGepasst && spieler == sagen)
+		|| spieler != toAct
 		|| reizwert == 264
 		) {
 			return false;
@@ -168,6 +168,11 @@ public class Tisch {
 			if (spieler == hoeren) {
 				reizphaseVorbei = true;
 				ramsch = false;
+				toAct = solist;
+			} else if (hoerenGepasst) {
+				toAct = sagen;
+			} else {
+				toAct = hoeren;
 			}
 			propagateStateChange();
 			return true;
@@ -176,15 +181,17 @@ public class Tisch {
 
 	public Boolean mitgehen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
-		if (mitgegangen
-		|| spieler == geben
-		|| (!hoerenGepasst && spieler == sagen)
-		|| (hoerenGepasst && spieler == hoeren)
-		) {
+		if (spieler != toAct) return false;
+		if (mitgegangen) {
 			return false;
 		} else {
 			mitgegangen = true;
 			solist = spieler;
+			if (sagenGepasst || hoerenGepasst) {
+				toAct = geben;
+			} else {
+				toAct = sagen;
+			}
 			propagateStateChange();
 			return true;
 		}
@@ -193,44 +200,38 @@ public class Tisch {
 	// Auch für Passen
 	public Boolean aussteigen(int spielerNr) {
 		Spieler spieler = spieler(spielerNr);
-		if (mitgegangen) {
-			if (spieler == hoeren
-			|| (!(sagenGepasst && gebenGepasst) && spieler == hoeren)
-			|| (!sagenGepasst && spieler == geben)
-			|| (sagenGepasst && spieler == sagen)
-			) {
-				return false;
+		if (spieler != toAct) {
+			return false;
+		} else if (mitgegangen) {
+			if (spieler == hoeren) {
+				reizphaseVorbei = true;
+				ramsch = true;
+				// TODO: toAct für Ramsch setzen
+			} else if (spieler == sagen) {
+				sagenGepasst = true;
+				toAct = geben;
+			} else if (reizwert >= 18) {
+				reizphaseVorbei = true;
+				ramsch = false;
+				toAct = solist;
 			} else {
-				if (spieler == hoeren) {
-					reizphaseVorbei = true;
-					ramsch = true;
-				} else if (spieler == sagen) {
-					sagenGepasst = true;
-				} else if (reizwert >= 18) {
-					reizphaseVorbei = true;
-					ramsch = false;
-				} else {
-					gebenGepasst = true;
-				}
-				propagateStateChange();
-				return true;
+				gebenGepasst = true;
+				toAct = hoeren;
 			}
+			propagateStateChange();
+			return true;
 		} else {
-			if (spieler == geben
-			|| (!hoerenGepasst && spieler == sagen)
-			|| (hoerenGepasst && spieler == hoeren)
-			) {
-				return false;
+			mitgegangen = true;
+			if (spieler == sagen || sagenGepasst) {
+				reizphaseVorbei = true;
+				ramsch = false;
+				toAct = solist;
 			} else {
-				if (spieler == sagen || sagenGepasst) {
-					reizphaseVorbei = true;
-					ramsch = false;
-				} else {
-					hoerenGepasst = true;
-				}
-				propagateStateChange();
-				return true;
+				hoerenGepasst = true;
+				toAct = geben;
 			}
+			propagateStateChange();
+			return true;
 		}
 	}
 

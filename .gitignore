@@ -1,4 +1,5 @@
 out/
 .bloop
 .metals
+settings.json
 server.log
